@@ -3,6 +3,7 @@ package com.example.anhnh.sliderdemo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -10,9 +11,23 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import MyObject.Film;
 import anhnht.Component.Log_In;
 import anhnht.Component.Movie_Information_Activity;
 
@@ -27,11 +42,47 @@ public class MainActivity extends AppCompatActivity {
     private static boolean loggedIn = false;
     private TextView txtUserWelcome;
     private Button btnLogIn;
+    private ImageView test;
+
+    private ArrayList<Film> ListofFilms = new ArrayList<>();
+
+    private DatabaseReference mFilmReference;
+    private FirebaseUser currentUser;
+    private StorageReference mStorageRef;
+
+    private void setupDB(){
+        mFilmReference = FirebaseDatabase.getInstance().getReference().child("Films");
+        mFilmReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    String id = data.getKey();
+                    String name = data.child("Name").getValue().toString();
+                    String Image = data.child("Picture").child("image1").getValue().toString();
+                    String Descrip = data.child("Description").getValue().toString();
+                    String Duration = data.child("Duration").getValue().toString();
+                    String Producer = data.child("Producer").getValue().toString();
+                    String Rating = data.child("Rating").getValue().toString();
+                    Film film = new Film(id,name,Image,Descrip,Duration,Producer,Rating);
+                    ListofFilms.add(film);
+                    swipeAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupDB();
         init();
         //Set Action for view pager
         setViewPagerAction();
@@ -39,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         checkLogin();
         //Set onclick event
         onClickEvent();
+
     }
 
     /**
@@ -113,7 +165,8 @@ public class MainActivity extends AppCompatActivity {
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         //Show slider
         array_movies = viewPager.getResources().getStringArray(R.array.movie_eng_name);
-        swipeAdapter = new SwipeAdapter(this, array_movies);
+        swipeAdapter = new SwipeAdapter(this, ListofFilms);
+        //swipeAdapter = new SwipeAdapter(this, array_movies);
         viewPager.setAdapter(swipeAdapter);
         //set color array for dots and dots array size, must be put before call addBottomDots to prevent null
         colorsInactive = viewPager.getResources().getIntArray(R.array.array_dot_inactive);
@@ -206,10 +259,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
             int pos = viewPager.getCurrentItem();
-            System.out.println(pos);//return the current item position
-            System.out.println(array_movies[pos]);
+            //System.out.println(pos);//return the current item position
+            //System.out.println(array_movies[pos]);
             Intent info = new Intent(MainActivity.this, Movie_Information_Activity.class);
-            info.putExtra("Position", pos);
+            Film chose = ListofFilms.get(pos);
+            info.putExtra("Film", chose);
             startActivity(info);
             return false;
         }
