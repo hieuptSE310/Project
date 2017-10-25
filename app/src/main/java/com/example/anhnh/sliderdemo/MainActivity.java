@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static boolean loggedIn = false;
     private TextView txtUserWelcome;
     private Button btnLogIn;
-    private ImageView test;
+    private boolean check;
 
     private ArrayList<Film> ListofFilms = new ArrayList<>();
 
@@ -63,9 +63,28 @@ public class MainActivity extends AppCompatActivity {
                     String Duration = data.child("Duration").getValue().toString();
                     String Producer = data.child("Producer").getValue().toString();
                     String Rating = data.child("Rating").getValue().toString();
-                    Film film = new Film(id,name,Image,Descrip,Duration,Producer,Rating);
-                    ListofFilms.add(film);
+                    Film film = new Film(id, name, Image, Descrip, Duration, Producer, Rating);
+                    for (int i = 0; i < ListofFilms.size(); i++) {
+                        if (id.toString().equals(ListofFilms.get(i).getId())) {
+                                Film film1 = ListofFilms.get(i);
+                                film1.setId(id);
+                                film1.setName(name);
+                                film1.setImage(Image);
+                                film1.setDescrip(Descrip);
+                                film1.setDuration(Duration);
+                                film1.setProducer(Producer);
+                                film1.setRating(Rating);
+                                check = true;
+                                break;
+                        }
+                    }
+                    if (check){
+                        check = false;
+                    }else {
+                        ListofFilms.add(film);
+                    }
                     swipeAdapter.notifyDataSetChanged();
+
                 }
             }
 
