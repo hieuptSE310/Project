@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     String Duration = data.child("Duration").getValue().toString();
                     String Producer = data.child("Producer").getValue().toString();
                     String Rating = data.child("Rating").getValue().toString();
-                    Film film = new Film(id, name, Image, Descrip, Duration, Producer, Rating);
+                    String Trailer = data.child("Trailers").getValue().toString();
+                    Film film = new Film(id, name, Image, Descrip, Duration, Producer, Rating, Trailer);
                     for (int i = 0; i < ListofFilms.size(); i++) {
                         if (id.toString().equals(ListofFilms.get(i).getId())) {
                                 Film film1 = ListofFilms.get(i);
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                                 film1.setDuration(Duration);
                                 film1.setProducer(Producer);
                                 film1.setRating(Rating);
+                                film1.setTrailer(Trailer);
                                 check = true;
                                 break;
                         }

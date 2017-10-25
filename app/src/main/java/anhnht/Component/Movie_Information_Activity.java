@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.anhnh.sliderdemo.MainActivity;
 import com.example.anhnh.sliderdemo.R;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +25,7 @@ public class Movie_Information_Activity extends AppCompatActivity {
     ImageView imageView;
     //private TypedArray image;
     TextView movie_des, movieName;
-    Button btnTrailer;
+    Button btnTrailer, btnBooking;
 
     private void setupRef(){
         //mStorageRef = Fireb
@@ -34,6 +35,8 @@ public class Movie_Information_Activity extends AppCompatActivity {
         imageView= (ImageView) findViewById(R.id.movie_view);
         movie_des = (TextView) findViewById(R.id.txtMovieDes);
         movieName = (TextView) findViewById(R.id.txtMoiveName);
+        btnTrailer = (Button) findViewById(R.id.btnTrailer);
+        btnBooking = (Button) findViewById(R.id.btnBooking);
     }
 
     @Override
@@ -50,12 +53,25 @@ public class Movie_Information_Activity extends AppCompatActivity {
         movieName.setText(film.getName());
         movie_des.setMovementMethod(new ScrollingMovementMethod());
         //Set trailer button
-        btnTrailer = (Button) findViewById(R.id.btnTrailer);
         btnTrailer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //String url = getResources().getStringArray(R.array.movie_trailer)[pos];
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://")));
+            }
+        });
+        btnBooking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //if(MainActivity.isLoggedIn()) {
+                    Intent booking = new Intent(Movie_Information_Activity.this, Booking_Ticket.class);
+                    booking.putExtra("Film", film);
+                    startActivity(booking);
+                //}
+                /*else{
+                    Intent Login = new Intent(Movie_Information_Activity.this, Log_In.class);
+                    startActivity(Login);
+                }*/
             }
         });
 

@@ -19,6 +19,7 @@
         </activity>
         <activity android:name="anhnht.Component.Movie_Information_Activity" />
         <activity android:name="anhnht.Component.Log_In" />
+        <activity android:name="anhnht.Component.Booking_Ticket" />
         <activity android:name="anhnht.Component.Register"></activity>
     </application>
 

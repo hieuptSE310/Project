@@ -15,8 +15,17 @@ public class Film implements Serializable{
     private String Duration;
     private String Producer;
     private String Rating;
+    private String Trailer;
 
-    public Film(String id, String name, String image, String descrip, String duration, String producer, String rating) {
+    public String getTrailer() {
+        return Trailer;
+    }
+
+    public void setTrailer(String trailer) {
+        Trailer = trailer;
+    }
+
+    public Film(String id, String name, String image, String descrip, String duration, String producer, String rating, String trailer) {
         this.id = id;
         Name = name;
         Image = image;
@@ -24,6 +33,7 @@ public class Film implements Serializable{
         Duration = duration;
         Producer = producer;
         Rating = rating;
+        Trailer = trailer;
     }
 
     public String getId() {
